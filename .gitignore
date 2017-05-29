@@ -59,5 +59,4 @@ typings/
 
 *.js
 *.js.map
-node_modules
-typings
+*.user.json
