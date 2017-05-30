@@ -24,6 +24,16 @@ var project = (appconfig).project;
  *   "project": "testproject"
  * }
  */
+let Reset = "\x1b[0m"
+let Black = "\x1b[30m"
+let Red = "\x1b[31m"
+let Green = "\x1b[32m"
+let Yellow = "\x1b[33m"
+let Blue = "\x1b[34m"
+let Magenta = "\x1b[35m"
+let Cyan = "\x1b[36m\x1b[1m"
+let White = "\x1b[37m"
+
 
 var work = [];
 work.push(getReleaseDefinition(appconfig, 1));
@@ -38,7 +48,9 @@ Promise.all(work).then(
             var envcloud = envscloud.find(e => (<any>e).name == (<any>env10th).name);
             if (envcloud) {
                 let differences: deepDiff.IDiff[] = deepdiff.diff(env10th, envcloud);
+                console.log(Cyan)
                 console.log(`${envcloud.name} starting`);
+                console.log(Reset);
                 for (let diff of differences) {
                     console.log(`${diff.path}: ${diff.kind}`);
                     console.log(`< ${diff.lhs}`);
@@ -47,8 +59,9 @@ Promise.all(work).then(
 
                     readlinesync.question('push key to proceed');
                 }
+                console.log(Cyan);
                 console.log(`${envcloud.name} done`);
-                console.log();
+                console.log(Reset);
                 console.log();
             }
             else {
