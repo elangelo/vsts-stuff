@@ -69,23 +69,6 @@ Promise.all(work).then(
             }
         }
 
-
-
-        // // // // let ignoreKeys = ['id', 'createdBy', 'createdOn', 'modifiedBy', 'modifiedOn', 'displayName', 'uniqueName']
-
-        // // // // let filter: deepDiff.IPrefilter = function (path, key) {
-        // // // //     return ignoreKeys.indexOf(key) >= 0;
-        // // // // }
-        // // // let differences: deepDiff.IDiff[] = deepdiff.diff(values[0], values[1], filter, );
-
-        // // // for (let diff of differences) {
-        // // //     // let diff: deepDiff.IDiff = change;
-        // // //     console.log(`${diff.path}: ${diff.kind}`);
-        // // //     console.log(`< ${diff.lhs}`);
-        // // //     console.log(`> ${diff.rhs}`);
-        // // //     console.log('======')
-        // // // }
-
         console.log("**done**");
     }
 

@@ -1,0 +1,33 @@
+{
+  "name": "vsts-stuff",
+  "version": "1.0.0",
+  "description": "stuff to exploit the vsts REST API",
+  "main": "index.js",
+  "dependencies": {
+    "deep-diff": "^0.3.8",
+    "es6-promises": "^1.0.10",
+    "isomorphic-fetch": "^2.2.1",
+    "readline-sync": "^1.4.7",
+    "typescript": "^2.3.2"
+  },
+  "devDependencies": {
+    "typings": "^2.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elangelo/vsts-stuff.git"
+  },
+  "keywords": [
+    "vsts",
+    "rest"
+  ],
+  "author": "samuel verstraete",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/elangelo/vsts-stuff/issues"
+  },
+  "homepage": "https://github.com/elangelo/vsts-stuff#readme"
+}
