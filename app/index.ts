@@ -1,12 +1,11 @@
 import * as fetch from "isomorphic-fetch";
 import * as deepdiff from "deep-diff";
+import * as jsdiff from "diff";
 import * as readlinesync from "readline-sync";
 import * as colors from "colors/safe";
 import * as functions from "./functions";
 
 import { Config } from "./configuration";
-
-// import * as configuration from "configuration";
 
 let appconfig: Config = require("./config.user.json");
 var account = (appconfig).account;
@@ -45,14 +44,39 @@ Promise.all(work).then(
         for (let env10th of envs10th) {
             var envcloud = envscloud.find(e => (<any>e).name == (<any>env10th).name);
             if (envcloud) {
+                // // // // // let differences = diff.diffJson(env10th, envcloud);
+                // // // // // differences.forEach(function (part) {
+                // // // // //     var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
+                // // // // //     console.log(part.added)
+                // // // // //     console.log(part.removed);
+                // // // // //     process.stderr.write(part.value);
+                // // // // //     readlinesync.question('push key to proceed');
+                // // // // // });
                 let differences: deepDiff.IDiff[] = deepdiff.diff(env10th, envcloud);
                 console.log(Cyan)
                 console.log(`${envcloud.name} starting`);
                 console.log(Reset);
                 for (let diff of differences) {
                     console.log(`${diff.path}: ${diff.kind}`);
-                    console.log(`< ${diff.lhs}`);
-                    console.log(`> ${diff.rhs}`);
+                    var lhs = diff.lhs.toString();
+                    var rhs = diff.rhs.toString();
+                    let differ = new jsdiff.Diff();
+
+                    // let intdifferences: jsdiff.IDiffResult[] = differ.diff(lhs,rhs);
+                     let intdifferences: jsdiff.IDiffResult[] = jsdiff.diffWordsWithSpace(lhs,rhs);
+                    intdifferences.forEach(function (part) {
+                        if (part.added) {
+                            process.stderr.write(colors.green(part.value));
+                        }
+                        else if (part.removed) {
+                            process.stderr.write(colors.red(part.value));
+                        }
+                        else {
+                            process.stderr.write(colors.grey(part.value));
+                        }
+                    });
+                    // console.log(`< ${diff.lhs}`);
+                    // console.log(`> ${diff.rhs}`);
                     console.log('======')
 
                     readlinesync.question('push key to proceed');

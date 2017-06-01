@@ -3,6 +3,7 @@
         "target": "es5",
         "declaration": true,
         "moduleResolution": "node",
+        "sourceMap": true,
         "outDir": "./lib",
         "lib": [
             "dom",
