@@ -60,3 +60,5 @@ typings/
 *.js
 *.js.map
 *.user.json
+
+lib

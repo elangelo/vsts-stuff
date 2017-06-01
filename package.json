@@ -4,7 +4,11 @@
   "description": "stuff to exploit the vsts REST API",
   "main": "index.js",
   "dependencies": {
+    "@types/colors": "^1.1.3",
+    "@types/diff": "^3.2.0",
+    "colors": "^1.1.2",
     "deep-diff": "^0.3.8",
+    "diff": "^3.2.0",
     "es6-promises": "^1.0.10",
     "isomorphic-fetch": "^2.2.1",
     "readline-sync": "^1.4.7",
