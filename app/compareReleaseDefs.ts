@@ -1,0 +1,4 @@
+namespace vstsstuff {
+    class CompareReleaseDefinitions {
+    }
+}
