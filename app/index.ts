@@ -57,13 +57,22 @@ Promise.all(work).then(
                 console.log(`${envcloud.name} starting`);
                 console.log(Reset);
                 for (let diff of differences) {
-                    console.log(`${diff.path}: ${diff.kind}`);
+                    var kind: string = '';
+                    switch (diff.kind) {
+                        case 'E':
+                            kind = '<edit>';
+                            break;
+                        default:
+                            kind = diff.kind;
+                    }
+
+                    process.stderr.write(`${diff.path}: ${kind} : `);
                     var lhs = diff.lhs.toString();
                     var rhs = diff.rhs.toString();
                     let differ = new jsdiff.Diff();
 
                     // let intdifferences: jsdiff.IDiffResult[] = differ.diff(lhs,rhs);
-                     let intdifferences: jsdiff.IDiffResult[] = jsdiff.diffWordsWithSpace(lhs,rhs);
+                    let intdifferences: jsdiff.IDiffResult[] = jsdiff.diffWordsWithSpace(lhs, rhs);
                     intdifferences.forEach(function (part) {
                         if (part.added) {
                             process.stderr.write(colors.green(part.value));
@@ -75,12 +84,9 @@ Promise.all(work).then(
                             process.stderr.write(colors.grey(part.value));
                         }
                     });
-                    // console.log(`< ${diff.lhs}`);
-                    // console.log(`> ${diff.rhs}`);
-                    console.log('======')
-
-                    readlinesync.question('push key to proceed');
+                    process.stderr.write('\n');
                 }
+                readlinesync.question('push key to proceed');
                 console.log(Cyan);
                 console.log(`${envcloud.name} done`);
                 console.log(Reset);
@@ -100,7 +106,7 @@ function getReleaseDefinition(config: Config, releaseDefinitionId: Number): Prom
         let releasedefinitionUri: string = `https://${account}.vsrm.visualstudio.com/defaultcollection/${project}/_apis/release/definitions/${releaseDefinitionId}?api-version=${apiversion}`
 
         let headers: Headers = new Headers();
-        var token = functions.btoa(`${config.username}:${config.token}`);
+        let token: string = functions.btoa(`${config.username}:${config.token}`);
         headers.append("Authorization", `Basic ${token}`);
 
         let init: RequestInit = {
