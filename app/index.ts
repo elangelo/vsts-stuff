@@ -33,8 +33,11 @@ let Cyan = "\x1b[36m\x1b[1m"
 let White = "\x1b[37m"
 
 var work = [];
-work.push(getReleaseDefinition(appconfig, 1));
-work.push(getReleaseDefinition(appconfig, 4));
+// work.push(getReleaseDefinition(appconfig, 1));
+// work.push(getReleaseDefinition(appconfig, 4));
+
+work.push(getReleaseRelease(appconfig, 320));
+work.push(getReleaseRelease(appconfig, 350))
 Promise.all(work).then(
     values => {
 
@@ -59,32 +62,43 @@ Promise.all(work).then(
                 for (let diff of differences) {
                     var kind: string = '';
                     switch (diff.kind) {
+                        case 'A':
+                            {
+                                kind = '<add>'
+                                process.stderr.write(`${diff.path}: ${kind} : `);
+                                process.stderr.write(colors.green(diff.rhs));
+                                process.stderr.write('\n');
+                                break;
+                            }
                         case 'E':
-                            kind = '<edit>';
-                            break;
+                            {
+                                kind = '<edit>';
+                                process.stderr.write(`${diff.path}: ${kind} : `);
+                                var lhs = diff.lhs.toString();
+                                var rhs = diff.rhs.toString();
+                                let differ = new jsdiff.Diff();
+
+                                // let intdifferences: jsdiff.IDiffResult[] = differ.diff(lhs,rhs);
+                                let intdifferences: jsdiff.IDiffResult[] = jsdiff.diffWordsWithSpace(lhs, rhs);
+                                intdifferences.forEach(function (part) {
+                                    if (part.added) {
+                                        process.stderr.write(colors.green(part.value));
+                                    }
+                                    else if (part.removed) {
+                                        process.stderr.write(colors.red(part.value));
+                                    }
+                                    else {
+                                        process.stderr.write(colors.grey(part.value));
+                                    }
+                                });
+                                process.stderr.write('\n');
+                                break;
+                            }
                         default:
                             kind = diff.kind;
                     }
 
-                    process.stderr.write(`${diff.path}: ${kind} : `);
-                    var lhs = diff.lhs.toString();
-                    var rhs = diff.rhs.toString();
-                    let differ = new jsdiff.Diff();
 
-                    // let intdifferences: jsdiff.IDiffResult[] = differ.diff(lhs,rhs);
-                    let intdifferences: jsdiff.IDiffResult[] = jsdiff.diffWordsWithSpace(lhs, rhs);
-                    intdifferences.forEach(function (part) {
-                        if (part.added) {
-                            process.stderr.write(colors.green(part.value));
-                        }
-                        else if (part.removed) {
-                            process.stderr.write(colors.red(part.value));
-                        }
-                        else {
-                            process.stderr.write(colors.grey(part.value));
-                        }
-                    });
-                    process.stderr.write('\n');
                 }
                 readlinesync.question('push key to proceed');
                 console.log(Cyan);
@@ -115,6 +129,32 @@ function getReleaseDefinition(config: Config, releaseDefinitionId: Number): Prom
         }
 
         let request: Request = new Request(releasedefinitionUri, init);
+
+        fetch(request)
+            .then((response) => {
+                return response.json()
+            })
+            .then((json) => {
+                resolve(json);
+            });
+    });
+}
+
+function getReleaseRelease(config: Config, releaseReleaseId: Number): Promise<string> {
+    return new Promise<string>((resolve) => {
+        let apiversion: string = "3.0-preview.1";
+        let releasesreleaseUri: string = `https://${account}.vsrm.visualstudio.com/defaultcollection/${project}/_apis/release/releases/${releaseReleaseId}?api-version=${apiversion}`
+
+        let headers: Headers = new Headers();
+        let token: string = functions.btoa(`${config.username}:${config.token}`);
+        headers.append("Authorization", `Basic ${token}`);
+
+        let init: RequestInit = {
+            method: "GET",
+            headers: headers,
+        }
+
+        let request: Request = new Request(releasesreleaseUri, init);
 
         fetch(request)
             .then((response) => {
